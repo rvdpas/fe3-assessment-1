@@ -2,7 +2,7 @@
 In de repository vind je de Bubble chart die ik heb gemaakt voor de eerste assignment van het vak Frontend 3.
 
 ## Preview
-![Preview of the chart](https://github.com/rvdpas/fe3-assessment-3/blob/master/public/preview.jpg)
+![Preview of the chart](https://github.com/rvdpas/fe3-assessment-1/blob/master/public/preview.jpg)
 
 ## Gebaseerd op
 [Bubble chart example](https://bl.ocks.org/mbostock/4063269)
@@ -37,8 +37,11 @@ Toen ik voor het eerst naar de structuur van D3 keek toen vond ik het moeilijk t
 - [ ] De cirkels kunnen orderen, zodat het wat overzichterlijker wordt hoeveel groter de een nou is tegenover de ander
 
 ### Gebruikte links
-[d3-format](https://github.com/d3/d3-format)
-[d3-pack](https://github.com/d3/d3-hierarchy/blob/master/README.md#pack)
+- [d3-format](https://github.com/d3/d3-format)
+- [d3-pack](https://github.com/d3/d3-hierarchy/blob/master/README.md#pack)
+- [d3-hierarchy](https://github.com/d3/d3-hierarchy)
+- [stackoverflow](https://stackoverflow.com/questions/tagged/d3.js)
+- [data inladen](http://learnjsdata.com/read_data.html)
 
 ## Contribute to the project
 
@@ -68,9 +71,6 @@ Now you can start the server by entering the following command in your terminal
 ```
 npm start
 ```
-You should see the following message in your terminal  
-
-![Server started](https://github.com/rvdpas/meesterproef/blob/master/public/img/server-running.png "Server started")
 
 Visit the application in the browser on 
 ```
