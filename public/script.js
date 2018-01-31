@@ -1,79 +1,76 @@
-// basic chart https://bl.ocks.org/mbostock/3885304
-// Tooltip: http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
-function createChart(error, data) {
+/*
+Based on: https://bl.ocks.org/mbostock/4063269
+*/
+
+// Create variables to store basic values in
+const svg = d3.select("svg");
+const width = +svg.attr("width");
+const height = +svg.attr("height");
+
+// Format data based on decimal notation, it's rounded to integer.
+const format = d3.format(",d");
+
+// Use color scheme to give all the circles a color: https://github.com/d3/d3/blob/master/API.md#color-schemes-d3-scale-chromatic
+const color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+// create a new pack layout
+const pack = d3.pack()
+  .size([width, height])
+  .padding(1.5);
+
+// parse data, if there is an error, throw it!
+d3.tsv("languages.tsv", function(d) {
+  d.speakers = +d.speakers;
+  if (d.speakers) return d; // if there is a value for d.speakers return it
+}, function(error, classes) {
   if (error) throw error;
 
-  const svg = d3.select("svg");
-  const margin = {top: 100, right: 20, bottom: 100, left: 80};
-  const width = +svg.attr("width") - margin.left - margin.right;
-  const height = +svg.attr("height") - margin.top - margin.bottom;
+  // create a root node with d3.hierarchy
+  const root = d3.hierarchy({children: classes})
+    .sum(function(d) { return d.speakers; })
+    .each(function(d) {
+      if (language = d.data.language) {
+        var language, i = language.lastIndexOf(".");
+        d.language = language;
+        d.package = language.slice(0, i);
+        d.class = language.slice(i + 1);
+      }
+    });
 
-  var xScale = d3.scaleBand().rangeRound([0, width]).padding(0.1);
-  var yScale = d3.scaleLinear().rangeRound([height, 0]);
+  // add all nodes to the g element
+  const node = svg.selectAll(".node")
+    .data(pack(root).leaves())
+    .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-  var g = svg.append("g")
-    .attr("transform", `translate( ${margin.left},${margin.top} )`);
+  // Create the circles
+  node.append("circle")
+    .attr("language", function(d) { return d.language; })
+    .attr("r", function(d) { return d.r; })
+    .style("fill", function(d) { return color(d.package);});
 
-  xScale.domain(data.map(d => d.language ));
-  yScale.domain([0, d3.max(data, d => d.speakers )]);
+  // create clippath and asign a link based on the language
+  node.append("clipPath")
+      .attr("language", function(d) { return "clip-" + d.language; })
+    .append("use")
+      .attr("xlink:href", function(d) { return "#" + d.language; });
 
-  // create x axis
-  g.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(xScale))
-    .selectAll("text")
-      .attr("y", 10)
-      .attr("x", 10)
-      .attr("dy", ".35em")
-      .attr("transform", "rotate(45)")
-      .style("text-anchor", "start")
-      .style("font-size", "13px");
+  // Add text to the circles
+  node.append("text")
+      .attr("clip-path", function(d) { return "url(#clip-" + d.language + ")"; })
+    .selectAll("tspan")
+    .data(function(d) { return d.class.split(/(?=[A-Z][^A-Z])/g); })
+    .enter().append("tspan")
+      .attr("x", 0)
+      .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
+      .text(function(d) { return d; });
 
-    // create y axis
-  g.append("g")
-    .attr("class", "axis axis--y")
-    .call(d3.axisLeft(yScale))
-  .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 6)
-    .attr("dy", "0.71em")
-    .attr("text-anchor", "end")
-    .text("speakers")
-    .style("font-size", "13px");
-
-  // create bars
-  g.selectAll(".bar")
-    .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", d => xScale(d.language))
-      .attr("y", d => yScale(d.speakers))
-      .attr("width", xScale.bandwidth())
-      .attr("height", d => height - yScale(d.speakers))
-      .on("mouseover", function(d) {
-        tooltip.transition()
-          .duration(200)
-          .style("opacity", .9);
-        tooltip.html(
-          `
-            <div class="tooltip__item"><strong>Language:</strong> ${d.language}</div>
-            <div class="tooltip__item"><strong>Speakers:</strong> ${d.speakers}</div>
-          `
-        )
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-        tooltip.transition()
-          .duration(500)
-          .style("opacity", 0)
-      });
-};
-
-const tooltip = d3.select("body").append("div")
-  .attr("class", "tooltip")
-  .style("opacity", 0);
-
-d3.tsv('languages.tsv', createChart);
+  // Data gave a NaN error when formatting d.speakers, after logging the data i saw i had to use d.value to print the amount of speakers
+  node.append("title")
+    .text(function(d) {
+      return d.language + "\n" + format(d.value);
+    }
+  );
+});
 
