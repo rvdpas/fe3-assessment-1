@@ -32,6 +32,8 @@ Toen ik voor het eerst naar de structuur van D3 keek toen vond ik het moeilijk t
 - [Linda - Learning Data Visualization with D3.js](https://www.lynda.com/D3-js-tutorials/Learning-Data-Visualization-D3-js/594451-2.html?srchtrk=index%3a3%0alinktypeid%3a2%0aq%3ad3%0apage%3a1%0as%3arelevance%0asa%3atrue%0aproducttypeid%3a2)
 - [Udemy - Data Visualize Data with D3.js The Easy Way](https://www.udemy.com/data-visualize-data-with-d3js-the-easy-way/learn/v4/overview)
 
+Toen alle code stond heb ik het geupdate naar ES6. Door gebruik van arrow functies, template strings en constante variabele krijg je schonere code die gebruikt wordt waarvoor het bedoelt is.
+
 ## To do
 - [ ] Hoeveelheid data laten zien in de cirkels
 - [ ] De cirkels kunnen orderen, zodat het wat overzichterlijker wordt hoeveel groter de een nou is tegenover de ander
@@ -42,6 +44,7 @@ Toen ik voor het eerst naar de structuur van D3 keek toen vond ik het moeilijk t
 - [d3-hierarchy](https://github.com/d3/d3-hierarchy)
 - [stackoverflow](https://stackoverflow.com/questions/tagged/d3.js)
 - [data inladen](http://learnjsdata.com/read_data.html)
+- [d3.sum](https://github.com/d3/d3-array)
 
 ## Contribute to the project
 

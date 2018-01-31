@@ -15,11 +15,11 @@ const color = d3.scaleOrdinal(d3.schemeCategory20c);
 
 // create a new pack layout
 const pack = d3.pack()
-  .size([width, height])
+  .size([width, height]) // takes the svg width and height
   .padding(1.5);
 
 // parse data, if there is an error, throw it!
-d3.tsv("languages.tsv", function(d) {
+d3.tsv("languages.tsv", d => {
   d.speakers = +d.speakers;
   if (d.speakers) return d; // if there is a value for d.speakers return it
 }, function(error, classes) {
@@ -27,8 +27,8 @@ d3.tsv("languages.tsv", function(d) {
 
   // create a root node with d3.hierarchy
   const root = d3.hierarchy({children: classes})
-    .sum(function(d) { return d.speakers; })
-    .each(function(d) {
+    .sum(d => d.speakers ) // returns the sum of the given array
+    .each(d => {
       if (language = d.data.language) {
         var language, i = language.lastIndexOf(".");
         d.language = language;
@@ -42,35 +42,32 @@ d3.tsv("languages.tsv", function(d) {
     .data(pack(root).leaves())
     .enter().append("g")
       .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+      .attr("transform", d => `translate(${d.x},${d.y})`);
 
   // Create the circles
   node.append("circle")
-    .attr("language", function(d) { return d.language; })
-    .attr("r", function(d) { return d.r; })
-    .style("fill", function(d) { return color(d.package);});
+    .attr("language", d => d.language)
+    .attr("r", d => d.r)
+    .style("fill", d => color(d.package));
 
   // create clippath and asign a link based on the language
   node.append("clipPath")
-      .attr("language", function(d) { return "clip-" + d.language; })
+      .attr("language", d => `clip-${d.language}`)
     .append("use")
-      .attr("xlink:href", function(d) { return "#" + d.language; });
+      .attr("xlink:href", d => `#${d.language}`);
 
   // Add text to the circles
   node.append("text")
-      .attr("clip-path", function(d) { return "url(#clip-" + d.language + ")"; })
+      .attr("clip-path", d => `url(${"#clip-"} ${d.language}`)
     .selectAll("tspan")
-    .data(function(d) { return d.class.split(/(?=[A-Z][^A-Z])/g); })
+    .data(d => d.class.split(/(?=[A-Z][^A-Z])/g))
     .enter().append("tspan")
       .attr("x", 0)
       .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
-      .text(function(d) { return d; });
+      .text(d => d );
 
   // Data gave a NaN error when formatting d.speakers, after logging the data i saw i had to use d.value to print the amount of speakers
   node.append("title")
-    .text(function(d) {
-      return d.language + "\n" + format(d.value);
-    }
-  );
+    .text(d => `${d.language}"\n"${format(d.value)}`);
 });
 
